@@ -40,12 +40,7 @@ describe('SentryErrorTracker', () => {
     helper.before();
   });
 
-  describe('init', () => {
-    test('given empty tracker id, throws exception', () => {
-      expect(() => helper.initTracker({ id: '', environment: 'dev' }))
-        .toThrowError('tracker id must not be empty');
-    });
-
+  describe('senty tracker initialization', () => {
     test('given empty environment, throws exception', () => {
       expect(() => helper.initTracker({ id: 'fake-sentry-id', environment: '' }))
         .toThrowError('environment must not be empty');
@@ -75,6 +70,15 @@ describe('SentryErrorTracker', () => {
 
       expect(helper.vueIntegrationMock.mock.calls.length).toBe(1);
       expect(helper.vueIntegrationMock.mock.calls[0][0].Vue).toBe(Vue);
+    });
+
+    test('given empty tracker id, sentry is not initialized', () => {
+      helper.initTracker({
+        id: '',
+        environment: 'prod',
+      });
+
+      expect(helper.sentryInitMock.mock.calls.length).toBe(0);
     });
   });
 });
