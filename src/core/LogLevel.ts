@@ -1,9 +1,9 @@
 // eslint-disable-next-line import/prefer-default-export
 export enum LogLevel {
-  TRACE,
-  DEBUG,
-  INFO,
-  WARN,
-  ERROR,
-  OFF,
+  TRACE = 'TRACE',
+  DEBUG = 'DEBUG',
+  INFO = 'INFO',
+  WARN = 'WARN',
+  ERROR = 'ERROR',
+  OFF = 'OFF',
 }

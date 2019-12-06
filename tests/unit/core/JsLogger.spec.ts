@@ -12,9 +12,12 @@ class TestContext {
 
   public customOutput!: string[];
 
+  public channels!: string[];
+
   public before(logLevel: LogLevel) {
     this.defaultOutput = [];
     this.customOutput = [];
+    this.channels = [];
 
     this.defaultHandlerMock.mockClear();
 
@@ -29,6 +32,7 @@ class TestContext {
 
   public get defaultHandlerMock(): Mock {
     Log.createDefaultHandler = jest.fn().mockReturnValue((messages: any[], context: any) => {
+      this.channels.push(context.name);
       this.defaultOutput.push(messages[0][0]);
     });
 
@@ -84,7 +88,7 @@ describe('JsLogger', () => {
       [LogLevel.WARN, 2],
       [LogLevel.ERROR, 1],
       // [LogLevel.DEBUG, 2],
-    ])('level(%i)', (logLevel, expectedWriteCount) => {
+    ])('level(%i)', (logLevel: any, expectedWriteCount: any) => {
       ctx.before(logLevel);
 
       ctx.logger.trace('log info');
@@ -94,6 +98,41 @@ describe('JsLogger', () => {
       ctx.logger.error('log error');
 
       expect(ctx.customOutput.length).toBe(expectedWriteCount);
+    });
+  });
+
+  describe('log channels', () => {
+    beforeEach(() => {
+      ctx.before(LogLevel.TRACE);
+    });
+
+    test('given no channel, then default is used', () => {
+      ctx.logger.trace('default');
+      ctx.logger.debug('default');
+      ctx.logger.info('default');
+      ctx.logger.warn('default');
+      ctx.logger.error('default');
+
+      expect(ctx.channels).toEqual(['DEFAULT', 'DEFAULT', 'DEFAULT', 'DEFAULT', 'DEFAULT']);
+    });
+
+    test('given specific channel, then this channel is used', () => {
+      ctx.logger.ctrace('CUSTOM', 'custom');
+      ctx.logger.cdebug('CUSTOM', 'custom');
+      ctx.logger.cinfo('CUSTOM', 'custom');
+      ctx.logger.cwarn('CUSTOM', 'custom');
+      ctx.logger.cerror('CUSTOM', 'custom');
+
+      expect(ctx.channels).toEqual(['CUSTOM', 'CUSTOM', 'CUSTOM', 'CUSTOM', 'CUSTOM']);
+    });
+
+    test('mixed channels', () => {
+      ctx.logger.ctrace('FIRST', 'a trace');
+      ctx.logger.info('something custom');
+      ctx.logger.cwarn('THIRD', 'something to warn');
+      ctx.logger.cerror('FIRST', 'ohoh, this failed!');
+
+      expect(ctx.channels).toEqual(['FIRST', 'DEFAULT', 'THIRD', 'FIRST']);
     });
   });
 });

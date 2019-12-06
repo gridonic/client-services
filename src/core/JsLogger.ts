@@ -13,6 +13,8 @@ import Lazy from '../decorator/lazy';
  * @see https://github.com/jonnyreeves/js-logger
  */
 export default class JsLogger implements Logger {
+  private static CHANNEL_DEFAULT = 'DEFAULT';
+
   private handlers: LoggerHandler[] = [];
 
   constructor(logLevel: LogLevel) {
@@ -28,24 +30,44 @@ export default class JsLogger implements Logger {
     this.handlers.push(handler);
   }
 
-  public trace(...messages: any[]): void {
-    Log.trace(messages);
+  ctrace(channel: string, ...messages: any[]): void {
+    this.logger(channel).trace(messages);
   }
 
-  public debug(...messages: any[]): void {
-    Log.debug(messages);
+  cdebug(channel: string, ...messages: any[]): void {
+    this.logger(channel).debug(messages);
+  }
+
+  cinfo(channel: string, ...messages: any[]) {
+    this.logger(channel).info(messages);
+  }
+
+  cwarn(channel: string, ...messages: any[]): void {
+    this.logger(channel).warn(messages);
+  }
+
+  cerror(channel: string, ...messages: any[]): void {
+    this.logger(channel).error(messages);
+  }
+
+  public trace(...messages: any[]): void {
+    this.ctrace(JsLogger.CHANNEL_DEFAULT, ...messages);
   }
 
   public info(...messages: any[]): void {
-    Log.info(messages);
+    this.cinfo(JsLogger.CHANNEL_DEFAULT, ...messages);
+  }
+
+  public debug(...messages: any[]): void {
+    this.cdebug(JsLogger.CHANNEL_DEFAULT, ...messages);
   }
 
   public warn(...messages: any[]): void {
-    Log.warn(messages);
+    this.cwarn(JsLogger.CHANNEL_DEFAULT, ...messages);
   }
 
   public error(...messages: any[]): void {
-    Log.error(messages);
+    this.cerror(JsLogger.CHANNEL_DEFAULT, ...messages);
   }
 
   private createDefaultHandler() {
@@ -76,5 +98,9 @@ export default class JsLogger implements Logger {
       [LogLevel.ERROR, Log.ERROR],
       [LogLevel.OFF, Log.OFF],
     ]);
+  }
+
+  private logger(channel: string) {
+    return Log.get(channel);
   }
 }
