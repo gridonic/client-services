@@ -1,6 +1,6 @@
 import Log from 'js-logger';
 
-import {LogLevel} from '@/core/Logger';
+import { LogLevel } from '@/core/LogLevel';
 import JsLogger from '@/core/JsLogger';
 
 import Mock = jest.Mock;

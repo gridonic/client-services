@@ -18,16 +18,19 @@ export interface SentryErrorTrackerConfig {
 export default class SentryErrorTracker implements ErrorTracker {
   private log: Logger;
 
-  constructor(log: Logger) {
+  private config: SentryErrorTrackerConfig;
+
+  constructor(log: Logger, config: SentryErrorTrackerConfig) {
     this.log = log;
+    this.config = config;
   }
 
-  public init(config: SentryErrorTrackerConfig) {
-    if (!config.environment) {
+  public start() {
+    if (!this.config.environment) {
       throw new Error('environment must not be empty');
     }
 
-    if (!config.id) {
+    if (!this.config.id) {
       this.log.warn('No dsn provided, Sentry is disabled');
       return;
     }
@@ -35,15 +38,15 @@ export default class SentryErrorTracker implements ErrorTracker {
     this.log.info('Sentry enabled');
 
     const sentryParams: Sentry.BrowserOptions = {
-      dsn: config.id,
-      environment: config.environment,
+      dsn: this.config.id,
+      environment: this.config.environment,
     };
 
-    if (config.vue) {
+    if (this.config.vue) {
       this.log.info('Vue integration enabled for Sentry');
 
       sentryParams.integrations = [
-        new Integrations.Vue({ Vue: config.vue, attachProps: true, logErrors: true }),
+        new Integrations.Vue({ Vue: this.config.vue, attachProps: true, logErrors: true }),
       ];
     }
 

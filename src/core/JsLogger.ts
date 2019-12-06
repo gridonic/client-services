@@ -1,6 +1,7 @@
 import Log from 'js-logger';
 import { ILogLevel } from 'js-logger/src/types.d';
-import { Logger, LoggerHandler, LogLevel } from './Logger';
+import { Logger, LoggerHandler } from './Logger';
+import { LogLevel } from './LogLevel';
 import Lazy from '../decorator/lazy';
 
 /**

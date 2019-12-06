@@ -5,7 +5,8 @@ import * as Integrations from '@sentry/integrations';
 import SentryErrorTracker, { SentryErrorTrackerConfig } from '@/tracking/SentryErrorTracker';
 import JsLogger from '@/core/JsLogger';
 
-import { LogLevel } from '@/core/Logger';
+import { Logger } from '@/core/Logger';
+import { LogLevel } from '@/core/LogLevel';
 
 import Mock = jest.Mock;
 
@@ -13,17 +14,20 @@ jest.mock('@sentry/browser');
 jest.mock('@sentry/integrations');
 
 class TestContext {
+  private logger!: Logger;
+
   public tracker!: SentryErrorTracker;
 
   public before() {
-    this.tracker = new SentryErrorTracker(new JsLogger(LogLevel.OFF));
+    this.logger = new JsLogger(LogLevel.OFF);
 
     this.sentryInitMock.mockClear();
     this.vueIntegrationMock.mockClear();
   }
 
   public initTracker(config: SentryErrorTrackerConfig) {
-    this.tracker.init(config);
+    this.tracker = new SentryErrorTracker(this.logger, config);
+    this.tracker.start();
   }
 
   public get sentryInitMock(): Mock {
@@ -43,45 +47,43 @@ describe('SentryErrorTracker', () => {
     ctx.before();
   });
 
-  describe('senty tracker initialization', () => {
-    test('given empty environment, throws exception', () => {
-      expect(() => ctx.initTracker({ id: 'fake-sentry-id', environment: '' }))
-        .toThrowError('environment must not be empty');
+  test('given empty environment, throws exception', () => {
+    expect(() => ctx.initTracker({ id: 'fake-sentry-id', environment: '' }))
+      .toThrowError('environment must not be empty');
+  });
+
+  test('given tracker id and environment, then sentry setup method called with correct values', () => {
+    ctx.initTracker({ id: 'fake-sentry-id', environment: 'prod' });
+
+    expect(ctx.sentryInitMock.mock.calls.length).toBe(1);
+
+    expect(ctx.sentryInitMock.mock.calls[0][0]).toEqual({
+      dsn: 'fake-sentry-id',
+      environment: 'prod',
+    });
+  });
+
+  test('given vue parameter, then vue integration is added correctly', () => {
+    ctx.initTracker({
+      id: 'fake-sentry-id',
+      environment: 'prod',
+      vue: Vue,
     });
 
-    test('given tracker id and environment, then sentry setup method called with correct values', () => {
-      ctx.initTracker({ id: 'fake-sentry-id', environment: 'prod' });
+    const sentryParams: Sentry.BrowserOptions = ctx.sentryInitMock.mock.calls[0][0];
 
-      expect(ctx.sentryInitMock.mock.calls.length).toBe(1);
+    expect(sentryParams.integrations!.length).toBe(1);
 
-      expect(ctx.sentryInitMock.mock.calls[0][0]).toEqual({
-        dsn: 'fake-sentry-id',
-        environment: 'prod',
-      });
+    expect(ctx.vueIntegrationMock.mock.calls.length).toBe(1);
+    expect(ctx.vueIntegrationMock.mock.calls[0][0].Vue).toBe(Vue);
+  });
+
+  test('given empty tracker id, sentry is not initialized', () => {
+    ctx.initTracker({
+      id: '',
+      environment: 'prod',
     });
 
-    test('given vue parameter, then vue integration is added correctly', () => {
-      ctx.initTracker({
-        id: 'fake-sentry-id',
-        environment: 'prod',
-        vue: Vue,
-      });
-
-      const sentryParams: Sentry.BrowserOptions = ctx.sentryInitMock.mock.calls[0][0];
-
-      expect(sentryParams.integrations!.length).toBe(1);
-
-      expect(ctx.vueIntegrationMock.mock.calls.length).toBe(1);
-      expect(ctx.vueIntegrationMock.mock.calls[0][0].Vue).toBe(Vue);
-    });
-
-    test('given empty tracker id, sentry is not initialized', () => {
-      ctx.initTracker({
-        id: '',
-        environment: 'prod',
-      });
-
-      expect(ctx.sentryInitMock.mock.calls.length).toBe(0);
-    });
+    expect(ctx.sentryInitMock.mock.calls.length).toBe(0);
   });
 });

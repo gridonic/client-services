@@ -9,13 +9,3 @@ export interface Logger {
 export interface LoggerHandler {
   handle(messages: any[], context: any): void;
 }
-
-// eslint-disable-next-line import/prefer-default-export
-export enum LogLevel {
-  TRACE,
-  DEBUG,
-  INFO,
-  WARN,
-  ERROR,
-  OFF,
-}
