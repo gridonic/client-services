@@ -17,6 +17,7 @@
     "@sentry/integrations": "^5.8.0",
     "core-js": "^3.3.2",
     "install": "^0.13.0",
+    "js-logger": "^1.6.0",
     "lazy-get-decorator": "^2.2.0",
     "npm": "^6.13.0",
     "vue": "^2.6.10",
