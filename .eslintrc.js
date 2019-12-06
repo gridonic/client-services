@@ -12,6 +12,10 @@ module.exports = {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'class-methods-use-this': 'off',
+    'vue/script-indent': ['error', 2, {
+      baseIndent: 1,
+      ignores: [],
+    }],
   },
   parserOptions: {
     parser: '@typescript-eslint/parser',
@@ -24,6 +28,12 @@ module.exports = {
       ],
       env: {
         jest: true,
+      },
+    },
+    {
+      files: ['*.vue'],
+      rules: {
+        indent: 'off',
       },
     },
   ],

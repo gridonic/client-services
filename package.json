@@ -6,11 +6,15 @@
     "test": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm test",
-      "pre-push": "npm test"
-    }
+  "gitHooks": {
+    "pre-commit": "lint-staged",
+    "pre-push": "npm run test:unit"
+  },
+  "lint-staged": {
+    "*.{js,ts,vue}": [
+      "npm run lint",
+      "git add"
+    ]
   },
   "dependencies": {
     "@sentry/browser": "^5.8.0",
@@ -36,8 +40,9 @@
     "@vue/test-utils": "1.0.0-beta.29",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
-    "husky": "^3.1.0",
+    "lint-staged": "^9.5.0",
     "typescript": "~3.5.3",
-    "vue-template-compiler": "^2.6.10"
+    "vue-template-compiler": "^2.6.10",
+    "yorkie": "^2.0.0"
   }
 }
