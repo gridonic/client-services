@@ -8,7 +8,7 @@
   },
   "gitHooks": {
     "pre-commit": "lint-staged",
-    "pre-push": "npm run test:unit"
+    "pre-push": "npm run test"
   },
   "lint-staged": {
     "*.{js,ts,vue}": [
