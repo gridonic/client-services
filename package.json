@@ -1,7 +1,6 @@
 {
   "name": "@gridonic/client-services",
   "version": "0.1.0",
-  "private": true,
   "scripts": {
     "test": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint"
