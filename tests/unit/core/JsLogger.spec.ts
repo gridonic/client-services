@@ -1,7 +1,7 @@
 import Log from 'js-logger';
 
-import { LogLevel } from '@/core/LogLevel';
-import JsLogger from '@/core/JsLogger';
+import { LogLevel } from '@/core/logging/LogLevel';
+import JsLogger from '@/core/logging/JsLogger';
 
 import Mock = jest.Mock;
 
@@ -113,26 +113,31 @@ describe('JsLogger', () => {
       ctx.logger.warn('default');
       ctx.logger.error('default');
 
-      expect(ctx.channels).toEqual(['DEFAULT', 'DEFAULT', 'DEFAULT', 'DEFAULT', 'DEFAULT']);
+      expect(ctx.channels).toEqual(['default', 'default', 'default', 'default', 'default']);
     });
 
     test('given specific channel, then this channel is used', () => {
-      ctx.logger.ctrace('CUSTOM', 'custom');
-      ctx.logger.cdebug('CUSTOM', 'custom');
-      ctx.logger.cinfo('CUSTOM', 'custom');
-      ctx.logger.cwarn('CUSTOM', 'custom');
-      ctx.logger.cerror('CUSTOM', 'custom');
+      ctx.logger.createChannel('custom');
 
-      expect(ctx.channels).toEqual(['CUSTOM', 'CUSTOM', 'CUSTOM', 'CUSTOM', 'CUSTOM']);
+      ctx.logger.channel.custom.trace('custom');
+      ctx.logger.channel.custom.debug('custom');
+      ctx.logger.channel.custom.info('custom');
+      ctx.logger.channel.custom.warn('custom');
+      ctx.logger.channel.custom.error('custom');
+
+      expect(ctx.channels).toEqual(['custom', 'custom', 'custom', 'custom', 'custom']);
     });
 
     test('mixed channels', () => {
-      ctx.logger.ctrace('FIRST', 'a trace');
-      ctx.logger.info('something custom');
-      ctx.logger.cwarn('THIRD', 'something to warn');
-      ctx.logger.cerror('FIRST', 'ohoh, this failed!');
+      ctx.logger.createChannel('first');
+      ctx.logger.createChannel('third');
 
-      expect(ctx.channels).toEqual(['FIRST', 'DEFAULT', 'THIRD', 'FIRST']);
+      ctx.logger.channel.first.trace('a trace');
+      ctx.logger.info('something custom');
+      ctx.logger.channel.third.warn('something to warn');
+      ctx.logger.channel.first.error('ohoh, this failed!');
+
+      expect(ctx.channels).toEqual(['first', 'default', 'third', 'first']);
     });
   });
 });

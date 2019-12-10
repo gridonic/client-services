@@ -4,15 +4,13 @@ import * as Sentry from '@sentry/browser';
 import * as Integrations from '@sentry/integrations';
 
 import { ErrorTracker } from './ErrorTracker';
-import { Logger } from '../core/Logger';
+import { Logger } from '../core/logging/Logger';
 
 export interface SentryErrorTrackerConfig {
   id: string,
   environment: string,
   vue?: VueConstructor
 }
-
-const CHANNEL = 'SENTRY';
 
 /**
  * TODO: documentation
@@ -25,6 +23,8 @@ export default class SentryErrorTracker implements ErrorTracker {
   constructor(log: Logger, config: SentryErrorTrackerConfig) {
     this.log = log;
     this.config = config;
+
+    this.log.createChannel('sentry');
   }
 
   public start() {
@@ -33,11 +33,11 @@ export default class SentryErrorTracker implements ErrorTracker {
     }
 
     if (!this.config.id) {
-      this.log.cwarn(CHANNEL, 'No dsn provided, Sentry is disabled');
+      this.log.channel.sentry.info('No dsn provided, Sentry is disabled');
       return;
     }
 
-    this.log.cinfo(CHANNEL, 'Sentry enabled');
+    this.log.channel.sentry.info('Sentry enabled');
 
     const sentryParams: Sentry.BrowserOptions = {
       dsn: this.config.id,
@@ -45,7 +45,7 @@ export default class SentryErrorTracker implements ErrorTracker {
     };
 
     if (this.config.vue) {
-      this.log.cinfo(CHANNEL, 'Vue integration enabled for Sentry');
+      this.log.channel.sentry.info('Vue integration enabled for Sentry');
 
       sentryParams.integrations = [
         new Integrations.Vue({ Vue: this.config.vue, attachProps: true, logErrors: true }),

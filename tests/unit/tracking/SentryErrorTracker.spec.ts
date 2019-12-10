@@ -3,10 +3,10 @@ import * as Sentry from '@sentry/browser';
 import * as Integrations from '@sentry/integrations';
 
 import SentryErrorTracker, { SentryErrorTrackerConfig } from '@/tracking/SentryErrorTracker';
-import JsLogger from '@/core/JsLogger';
+import JsLogger from '@/core/logging/JsLogger';
 
-import { Logger } from '@/core/Logger';
-import { LogLevel } from '@/core/LogLevel';
+import { Logger } from '@/core/logging/Logger';
+import { LogLevel } from '@/core/logging/LogLevel';
 
 import Mock = jest.Mock;
 
