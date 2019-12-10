@@ -1,5 +1,5 @@
 import { ILogger } from 'js-logger/src/types.d';
-import { LogChannel } from '@/core/logging/Logger';
+import { LogChannel } from './Logger';
 
 export default class JsLogChannel implements LogChannel {
   private logger: ILogger;

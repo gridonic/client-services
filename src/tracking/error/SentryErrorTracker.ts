@@ -4,7 +4,7 @@ import * as Sentry from '@sentry/browser';
 import * as Integrations from '@sentry/integrations';
 
 import { ErrorTracker } from './ErrorTracker';
-import { Logger } from '../core/logging/Logger';
+import { Logger } from '../../core/logging/Logger';
 
 export interface SentryErrorTrackerConfig {
   id: string,

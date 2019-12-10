@@ -2,7 +2,7 @@ import Vue from 'vue';
 import * as Sentry from '@sentry/browser';
 import * as Integrations from '@sentry/integrations';
 
-import SentryErrorTracker, { SentryErrorTrackerConfig } from '@/tracking/SentryErrorTracker';
+import SentryErrorTracker, { SentryErrorTrackerConfig } from '@/tracking/error/SentryErrorTracker';
 import JsLogger from '@/core/logging/JsLogger';
 
 import { Logger } from '@/core/logging/Logger';
