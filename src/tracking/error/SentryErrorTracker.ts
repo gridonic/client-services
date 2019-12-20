@@ -1,15 +1,13 @@
-import { VueConstructor } from 'vue';
-
 import * as Sentry from '@sentry/browser';
 import * as Integrations from '@sentry/integrations';
 
-import { ErrorTracker } from './ErrorTracker';
 import { Logger } from '../../core/logging/Logger';
+import { ErrorTracker } from './ErrorTracker';
 
 export interface SentryErrorTrackerConfig {
   id: string,
   environment: string,
-  vue?: VueConstructor
+  vue?: any
 }
 
 /**
