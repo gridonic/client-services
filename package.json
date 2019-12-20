@@ -5,6 +5,7 @@
   "types": "dist/index.d.ts",
   "files": ["src/**/*", "dist/**/*"],
   "sideEffects": "false",
+  "repository": "https://github.com/gridonic/client-services",
   "scripts": {
     "build": "tsc",
     "test": "vue-cli-service test:unit",
