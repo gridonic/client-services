@@ -33,11 +33,11 @@ export default class SentryErrorTracker implements ErrorTracker {
     }
 
     if (!this.config.id) {
-      this.log.channel.sentry.info('No dsn provided, Sentry is disabled');
+      this.log.channel.sentry.debug('No dsn provided, Sentry is disabled');
       return;
     }
 
-    this.log.channel.sentry.info('Sentry enabled');
+    this.log.channel.sentry.debug('Sentry enabled');
 
     const sentryParams: Sentry.BrowserOptions = {
       dsn: this.config.id,
@@ -45,7 +45,7 @@ export default class SentryErrorTracker implements ErrorTracker {
     };
 
     if (this.config.vue) {
-      this.log.channel.sentry.info('Vue integration enabled for Sentry');
+      this.log.channel.sentry.debug('Vue integration enabled for Sentry');
 
       sentryParams.integrations = [
         new Integrations.Vue({ Vue: this.config.vue, attachProps: true, logErrors: true }),

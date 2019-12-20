@@ -19,6 +19,7 @@
   "dependencies": {
     "@sentry/browser": "^5.8.0",
     "@sentry/integrations": "^5.8.0",
+    "axios": "^0.19.0",
     "core-js": "^3.3.2",
     "install": "^0.13.0",
     "js-logger": "^1.6.0",

@@ -9,7 +9,7 @@ export interface LogChannel {
 export interface Logger extends LogChannel {
   channel: { [key: string]: LogChannel };
 
-  createChannel(name: string): void;
+  createChannel(name: string): LogChannel;
 }
 
 export interface LoggerHandler {

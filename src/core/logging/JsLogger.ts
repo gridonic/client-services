@@ -38,8 +38,10 @@ export default class JsLogger implements Logger {
     this.handlers.push(handler);
   }
 
-  public createChannel(name: string) {
+  public createChannel(name: string): LogChannel {
     this.channels[name] = new JsLogChannel(this.logger(name));
+
+    return this.channels[name];
   }
 
   public trace(...messages: any[]): void {

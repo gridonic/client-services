@@ -2,6 +2,7 @@ import Log from 'js-logger';
 
 import { LogLevel } from '@/core/logging/LogLevel';
 import JsLogger from '@/core/logging/JsLogger';
+import JsLogChannel from '@/core/logging/JsLogChannel';
 
 import Mock = jest.Mock;
 
@@ -114,6 +115,11 @@ describe('JsLogger', () => {
       ctx.logger.error('default');
 
       expect(ctx.channels).toEqual(['default', 'default', 'default', 'default', 'default']);
+    });
+
+    test('given new channel is created, then this channel is returned.', () => {
+      expect(ctx.logger.createChannel('custom'))
+        .toBeInstanceOf(JsLogChannel);
     });
 
     test('given specific channel, then this channel is used', () => {
