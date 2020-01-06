@@ -21,12 +21,8 @@ The library is designed to provide services used repeatedly in projects.
 
 ## Usage in Projects
 
-There are no compiled modules available in this library. Interfaces and classes must be imported directly from their
-source files. The usage of the gridonic cli makes sure that the compile and linting rules are always the same for
-the projects and this library, so this should work well enough.
-
-Still, it is recommended to do all imports in one file in each project and exporting the types. This prevents the code
-from being cluttered with import statements from this library.
+Services can be imported selectively into a project. It is recommended to do all imports in one file in each project
+and exporting the types. This prevents the code from being cluttered with import statements from this library.
 
 ## Developing the library
 
