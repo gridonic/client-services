@@ -49,7 +49,7 @@ describe('SentryErrorTracker', () => {
 
   test('given empty environment, throws exception', () => {
     expect(() => ctx.initTracker({ id: 'fake-sentry-id', environment: '' }))
-      .toThrowError('environment must not be empty');
+      .toThrowError('Environment must not be empty');
   });
 
   test('given tracker id and environment, then sentry setup method called with correct values', () => {
@@ -85,5 +85,28 @@ describe('SentryErrorTracker', () => {
     });
 
     expect(ctx.sentryInitMock.mock.calls.length).toBe(0);
+  });
+
+  test('given project name but no version, then no release is set', () => {
+    ctx.initTracker({ id: 'fake-sentry-id', environment: 'prod', projectName: 'my-project' });
+
+    expect(ctx.sentryInitMock.mock.calls[0][0].release).toBeFalsy();
+  });
+
+  test('given version but no project name, then no release is set', () => {
+    ctx.initTracker({ id: 'fake-sentry-id', environment: 'prod', version: '0.1.0' });
+
+    expect(ctx.sentryInitMock.mock.calls[0][0].release).toBeFalsy();
+  });
+
+  test('given version and project name, then no release is set', () => {
+    ctx.initTracker({
+      id: 'fake-sentry-id',
+      environment: 'prod',
+      projectName: 'my-project',
+      version: '0.1.0',
+    });
+
+    expect(ctx.sentryInitMock.mock.calls[0][0].release).toEqual('my-project@0.1.0');
   });
 });

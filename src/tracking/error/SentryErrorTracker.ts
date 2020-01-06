@@ -7,6 +7,9 @@ import { ErrorTracker } from './ErrorTracker';
 export interface SentryErrorTrackerConfig {
   id: string,
   environment: string,
+
+  projectName?: string,
+  version?: string,
   vue?: any
 }
 
@@ -27,7 +30,7 @@ export default class SentryErrorTracker implements ErrorTracker {
 
   public start() {
     if (!this.config.environment) {
-      throw new Error('environment must not be empty');
+      throw new Error('Environment must not be empty');
     }
 
     if (!this.config.id) {
@@ -48,6 +51,12 @@ export default class SentryErrorTracker implements ErrorTracker {
       sentryParams.integrations = [
         new Integrations.Vue({ Vue: this.config.vue, attachProps: true, logErrors: true }),
       ];
+    }
+
+    if (this.config.projectName && this.config.version) {
+      sentryParams.release = `${this.config.projectName}@${this.config.version}`;
+
+      this.log.channel.sentry.debug(`Release specified: ${sentryParams.release}`);
     }
 
     Sentry.init(sentryParams);
