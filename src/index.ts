@@ -1,17 +1,8 @@
-import { Container } from './core/container/Container';
-import Lazy from './decorator/lazy';
-import AxiosAjaxClient from './network/AxiosAjaxClient';
-import { AjaxResponse, AjaxRequestConfig, AjaxClient } from './network/AjaxClient';
-import { LogLevel } from './core/logging/LogLevel';
-import { Logger } from './core/logging/Logger';
-import JsLogger from './core/logging/JsLogger';
-import SentryErrorTracker from './tracking/error/SentryErrorTracker';
-import { ErrorTracker } from './tracking/error/ErrorTracker';
+export { default as Lazy } from './decorator/lazy';
 
-export {
-  Container,
-  AxiosAjaxClient, AjaxClient, AjaxRequestConfig, AjaxResponse,
-  SentryErrorTracker, ErrorTracker,
-  LogLevel, Logger, JsLogger,
-  Lazy,
-};
+export { default as AxiosAjaxClient } from './network/AxiosAjaxClient';
+
+export { default as SentryErrorTracker } from './tracking/error/SentryErrorTracker';
+
+export { default as JsLogger } from './core/logging/JsLogger';
+export { LogLevel } from './core/logging/LogLevel';
