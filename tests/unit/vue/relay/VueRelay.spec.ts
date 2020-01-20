@@ -1,5 +1,7 @@
 import Vue, { CreateElement } from 'vue';
 import VueRelay from '@/vue/VueRelay';
+import JsLogger from '../../../../src/core/logging/JsLogger';
+import { LogLevel } from '../../../../src';
 
 class TestContext {
   public relay: VueRelay;
@@ -9,7 +11,7 @@ class TestContext {
   public componentPropValues: any = {};
 
   constructor() {
-    this.relay = new VueRelay(Vue);
+    this.relay = new VueRelay(new JsLogger(LogLevel.OFF), Vue);
     this.vueComponent = this.createVueComponent();
   }
 
