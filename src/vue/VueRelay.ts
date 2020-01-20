@@ -1,7 +1,7 @@
 import { VueConstructor } from 'vue';
 
-import { ComponentRelay } from '@/vue/ComponentRelay';
-import { Logger } from '@/core/logging/Logger';
+import { ComponentRelay } from './ComponentRelay';
+import { Logger } from '../core/logging/Logger';
 
 export default class VueRelay implements ComponentRelay {
   private log: Logger;
