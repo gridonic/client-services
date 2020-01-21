@@ -1,3 +1,14 @@
 export interface ComponentRelay {
-  parse(tag: string, component: any): any;
+  parse(componentInfo: ComponentInfo): any;
+}
+
+export interface ComponentProvider {
+  componentInfos: ComponentInfo[];
+}
+
+export interface ComponentInfo {
+  selector: string;
+  component: (() => any)|any;
+  before?: () => void,
+  args?: { [key: string]: any }
 }

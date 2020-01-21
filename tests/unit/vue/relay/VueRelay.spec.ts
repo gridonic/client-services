@@ -1,29 +1,42 @@
+import { createLocalVue } from '@vue/test-utils';
+
 import Vue, { CreateElement } from 'vue';
+import Vuex from 'vuex';
+
+import JsLogger from '@/core/logging/JsLogger';
+import { LogLevel } from '@/core/logging/LogLevel';
+
 import VueRelay from '@/vue/VueRelay';
-import JsLogger from '../../../../src/core/logging/JsLogger';
-import { LogLevel } from '../../../../src';
+
+const localVue = createLocalVue();
+localVue.use(Vuex);
 
 class TestContext {
   public relay: VueRelay;
   public vueComponent: Vue;
 
-  public componentMounted = false;
-  public componentPropValues: any = {};
+  public component: Vue|null = null;
 
   constructor() {
-    this.relay = new VueRelay(new JsLogger(LogLevel.OFF), Vue);
+    this.relay = new VueRelay(new JsLogger(LogLevel.OFF), localVue);
     this.vueComponent = this.createVueComponent();
   }
 
   public before() {
-    this.componentMounted = false;
-    this.componentPropValues = {};
+    this.component = null;
+  }
+
+  parseDefault() {
+    this.relay.parse({
+      selector: 'test-component',
+      component: this.vueComponent,
+    });
   }
 
   private createVueComponent(): any {
     const self = this;
 
-    return Vue.component('text-display', {
+    return localVue.component('text-display', {
       props: {
         msg: {
           type: String,
@@ -31,8 +44,7 @@ class TestContext {
         },
       },
       mounted() {
-        self.componentMounted = true;
-        self.componentPropValues = this.$props;
+        self.component = this;
       },
       render(h: CreateElement) {
         return h('div', this.msg);
@@ -50,9 +62,9 @@ describe('VueRelay', () => {
 
   describe('given no component hook in DOM', () => {
     test('then no vue component is mounted', () => {
-      ctx.relay.parse('test-component', ctx.vueComponent);
+      ctx.parseDefault();
 
-      expect(ctx.componentMounted).toBe(false);
+      expect(ctx.component).toBeFalsy();
     });
   });
 
@@ -62,15 +74,82 @@ describe('VueRelay', () => {
     });
 
     test('then test component is mounted', () => {
-      ctx.relay.parse('test-component', ctx.vueComponent);
+      ctx.parseDefault();
 
-      expect(ctx.componentMounted).toBe(true);
+      expect(ctx.component).toBeTruthy();
     });
 
     test('then no data is passed to the component', () => {
-      ctx.relay.parse('test-component', ctx.vueComponent);
+      ctx.parseDefault();
 
-      expect(ctx.componentPropValues.msg).toEqual('');
+      expect(ctx.component!.$props.msg).toEqual('');
+    });
+
+    describe('shared store', () => {
+      test('given no store argument, then store is not available in component', () => {
+        ctx.parseDefault();
+
+        expect(ctx.component!.$store).toBeFalsy();
+      });
+
+      test('given store argument is passed, then the store is available in the component', () => {
+        ctx.relay.parse({
+          selector: 'test-component',
+          component: ctx.vueComponent,
+          args: {
+            store: new Vuex.Store({
+              state: {
+                message: 'Hello!',
+              },
+            }),
+          },
+        });
+
+        expect(ctx.component!.$store).toBeTruthy();
+      });
+    });
+
+    describe('hooks', () => {
+      test('"before" hook is called before component is mounted', () => {
+        let beforeWasCalled = false;
+        let componentNotMountedAtBefore = false;
+
+        ctx.relay.parse({
+          selector: 'test-component',
+          component: ctx.vueComponent,
+          before: () => {
+            beforeWasCalled = true;
+            componentNotMountedAtBefore = !ctx.component;
+          },
+        });
+
+        expect(beforeWasCalled).toBe(true);
+        expect(componentNotMountedAtBefore).toBe(true);
+      });
+    });
+  });
+
+  describe('given component hook with class selector', () => {
+    beforeEach(() => {
+      document.body.innerHTML = '<div><div class="test-component"></div></div>';
+    });
+
+    test('when parsed with a non-existing class, then no component is mounted', () => {
+      ctx.relay.parse({
+        selector: '.not-existing-element',
+        component: ctx.vueComponent,
+      });
+
+      expect(ctx.component).toBeFalsy();
+    });
+
+    test('when parsed with existing class, then component is mounted', () => {
+      ctx.relay.parse({
+        selector: '.test-component',
+        component: ctx.vueComponent,
+      });
+
+      expect(ctx.component).toBeTruthy();
     });
   });
 
@@ -80,16 +159,13 @@ describe('VueRelay', () => {
         + '<test-component data-component=\'{ "props": { "msg": "Hello component" } }\' />'
         + '</div>';
 
+      ctx.parseDefault();
 
-      ctx.relay.parse('test-component', ctx.vueComponent);
-
-      expect(ctx.componentPropValues.msg).toEqual('Hello component');
+      expect(ctx.component!.$props.msg).toEqual('Hello component');
     });
   });
 
   describe('TODO: multiple', () => {
     // TODO: multiple setups
-    // TODO: query or element
-    // TODO: even bus
   });
 });

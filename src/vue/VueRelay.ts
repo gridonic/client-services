@@ -1,38 +1,50 @@
-import { VueConstructor } from 'vue';
-
-import { ComponentRelay } from './ComponentRelay';
+import { ComponentInfo, ComponentRelay } from './ComponentRelay';
 import { Logger } from '../core/logging/Logger';
 
 export default class VueRelay implements ComponentRelay {
   private log: Logger;
-  private readonly Vue: VueConstructor;
+  private readonly Vue: any;
 
-  constructor(log: Logger, vueConstructor: VueConstructor) {
+  constructor(log: Logger, vue: any) {
     this.log = log;
-    this.Vue = vueConstructor;
+    this.Vue = vue;
 
     this.log.createChannel('vue');
   }
 
-  public parse(tag: string, component: any): any {
-    const $els = [...document.querySelectorAll(tag)];
+  public parse(componentInfo: ComponentInfo): any {
+    const { selector } = componentInfo;
 
-    return $els.map(($el) => {
-      this.log.channel.vue.info(`Creating component for <${tag}>`);
+    const $els = [...document.querySelectorAll(selector)] as HTMLElement[];
 
-      return new this.Vue({
-        el: $el,
+    return $els.map(($el: HTMLElement) => {
+      this.log.channel.vue.info(`Creating component for <${selector}>`);
 
-        // @see https://vuejs.org/v2/guide/render-function.html#createElement-Arguments
-        render: createElement => createElement(
-          component,
-          {
-            class: $el.className,
-            ...(JSON.parse(($el as HTMLElement).dataset.component || '{}')),
-          },
-          $el.innerHTML,
-        ),
-      });
+      if (componentInfo.before) {
+        componentInfo.before();
+      }
+
+      return this.createComponent($el, componentInfo.component, componentInfo.args);
     });
+  }
+
+  private createComponent($el: HTMLElement, component: any, args?: { [key: string]: any }) {
+    let componentArgs = {
+      el: $el,
+
+      // @see https://vuejs.org/v2/guide/render-function.html#createElement-Arguments
+      render: (createElement: any) => createElement(
+        component,
+        {
+          class: $el.className,
+          ...(JSON.parse(($el as HTMLElement).dataset.component || '{}')),
+        },
+        $el.innerHTML,
+      ),
+    };
+
+    componentArgs = Object.assign({}, componentArgs, args || {});
+
+    return new this.Vue(componentArgs);
   }
 }
