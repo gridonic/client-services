@@ -1,7 +1,8 @@
 {
   "name": "@gridonic/client-services",
-  "version": "0.1.9",
-  "main": "dist/index.js",
+  "version": "0.1.10",
+  "main": "dist/cjs/index.js",
+  "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
     "src/**/*",
@@ -10,7 +11,7 @@
   "sideEffects": "false",
   "repository": "https://github.com/gridonic/client-services",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && tsc --module Commonjs --outDir ./dist/cjs",
     "test": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
     "docs": "typedoc --out docs src"
@@ -34,6 +35,7 @@
     "js-logger": "^1.6.0",
     "lazy-get-decorator": "^2.2.0",
     "npm": "^6.13.0",
+    "promise-each": "^2.2.0",
     "vue": "^2.6.10",
     "vue-class-component": "^7.0.2",
     "vue-property-decorator": "^8.3.0",
@@ -51,6 +53,7 @@
     "@vue/test-utils": "1.0.0-beta.29",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
+    "flush-promises": "^1.0.2",
     "lint-staged": "^9.5.0",
     "typedoc": "^0.15.4",
     "typescript": "~3.5.3",
