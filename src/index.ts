@@ -2,8 +2,7 @@
 export { default as Lazy } from './decorator/lazy';
 
 // Helpers
-// @ts-ignore no declaration file for promise each
-export { default as each } from 'promise-each';
+export { default as promise } from './promise/promise';
 
 // Network
 export { default as AxiosAjaxClient } from './network/AxiosAjaxClient';
