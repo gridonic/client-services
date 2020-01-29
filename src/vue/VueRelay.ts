@@ -12,17 +12,19 @@ export default class VueRelay implements ComponentRelay {
     this.log.createChannel('vue');
   }
 
-  public parse(componentInfo: ComponentInfo): any {
+  public async parse(componentInfo: ComponentInfo): Promise<any> {
     const { selector } = componentInfo;
 
     const $els = [...document.querySelectorAll(selector)] as HTMLElement[];
 
+    if ($els.length > 0) {
+      if (componentInfo.before) {
+        await componentInfo.before();
+      }
+    }
+
     return $els.map(($el: HTMLElement) => {
       this.log.channel.vue.info(`Creating component for <${selector}>`);
-
-      if (componentInfo.before) {
-        componentInfo.before();
-      }
 
       return this.createComponent($el, componentInfo.component, componentInfo.args);
     });

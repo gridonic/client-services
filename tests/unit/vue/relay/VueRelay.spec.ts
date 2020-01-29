@@ -110,6 +110,20 @@ describe('VueRelay', () => {
     });
 
     describe('hooks', () => {
+      test('"before" hook is not called when no component mounted', () => {
+        let beforeWasCalled = false;
+
+        ctx.relay.parse({
+          selector: 'not-found-component',
+          component: ctx.vueComponent,
+          before: () => {
+            beforeWasCalled = true;
+          },
+        });
+
+        expect(beforeWasCalled).toBe(false);
+      });
+
       test('"before" hook is called before component is mounted', () => {
         let beforeWasCalled = false;
         let componentNotMountedAtBefore = false;
