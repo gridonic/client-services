@@ -10,6 +10,13 @@ Looking for [unreleased] changes?
 
 <br>
 
+## [0.1.11]
+###### 2020-01-29
+
+###### Added
+
+- feat: add syntactic sugar and better export for promise.each function
+
 ## [0.1.10]
 ###### 2020-01-29
 
@@ -22,5 +29,4 @@ Looking for [unreleased] changes?
 
 - refactor: call vue relay hooks once before components are mounted
 
-[unreleased]: https://github.com/gridonic/generator/compare/1.0.10...HEAD
-[0.1.10]: https://github.com/gridonic/generator/compare/0.1.9...1.0.10
+[unreleased]: https://github.com/gridonic/client-services/compare/1.0.11...HEAD
