@@ -43,6 +43,14 @@ Lints and fixes files
 npm run lint
 ```
 
+### Publishing
+
+When ready to release, execute the following steps, given that all changes are commited in the master branch:
+- List changes in the CHANGELOG.md
+- Bump your version and automatically create a git tag with `npm version <type>`, where type is patch, minor or major
+- Push the master branch `git push` and the tags `git push --tags`
+- Create a release in github. A github action will then automatically publish the package to npm
+
 ### Guidelines
 
 - Every service must be documented
