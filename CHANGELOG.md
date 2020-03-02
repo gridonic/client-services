@@ -10,6 +10,13 @@ Looking for [unreleased] changes?
 
 <br>
 
+## [0.2.0]
+###### 2020-03-02
+
+###### Added
+
+- feat(ajax): extend methods for ajax client to allow all methods
+
 ## [0.1.11]
 ###### 2020-01-29
 
@@ -29,4 +36,5 @@ Looking for [unreleased] changes?
 
 - refactor: call vue relay hooks once before components are mounted
 
-[unreleased]: https://github.com/gridonic/client-services/compare/1.0.11...HEAD
+[unreleased]: https://github.com/gridonic/client-services/compare/0.2.0...HEAD
+[release]: https://github.com/gridonic/client-services/compare/0.1.11...0.2.0
